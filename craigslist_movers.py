@@ -78,8 +78,8 @@ def fetch(url):
 
 
 def post_id(url):
-    m = re.search(r"/(\d+)\.html", url)
-    return m.group(1) if m else url
+    id = re.search(r"/(\d+)\.html", url)
+    return id.group(1) if id else url
 
 
 def search(city, section, query):
@@ -160,11 +160,10 @@ def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     env = load_env(ENV_PATH)
     craigslistConfig = json.loads(CONFIG_PATH.read_text())
+    if env.get("PUSHOVER_USER_KEY") is None or env.get("PUSHOVER_APP_TOKEN") is None:
+        sys.exit("Edit .env: set PUSHOVER_USER_KEY and PUSHOVER_APP_TOKEN first.")
     craigslistConfig["pushover_user_key"] = env.get("PUSHOVER_USER_KEY", "")
     craigslistConfig["pushover_app_token"] = env.get("PUSHOVER_APP_TOKEN", "")
-    if not craigslistConfig["pushover_user_key"] or not craigslistConfig["pushover_app_token"] \
-            or "CHANGE_ME" in (craigslistConfig["pushover_user_key"], craigslistConfig["pushover_app_token"]):
-        sys.exit("Edit .env: set PUSHOVER_USER_KEY and PUSHOVER_APP_TOKEN first.")
 
     db = sqlite3.connect(DB_PATH)
     db.execute("CREATE TABLE IF NOT EXISTS seen (id TEXT PRIMARY KEY, title TEXT, url TEXT)")
