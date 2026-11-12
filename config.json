@@ -4,6 +4,7 @@
     "dmg"
   ],
   "queries": [
+    "move",
     "mover",
     "moving",
     "loader",
